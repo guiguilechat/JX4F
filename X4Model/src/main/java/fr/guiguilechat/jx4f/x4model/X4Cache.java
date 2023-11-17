@@ -100,7 +100,9 @@ public class X4Cache {
 		File cacheDir = cacheDir();
 		File[] dataFiles = baseDir.listFiles(f -> f.isFile() && f.getName().endsWith(".cat"));
 		return Stream.of(dataFiles)
-				.map(f -> CachedX4Data.of(baseDir, f.getName().replace(".cat", ""), cacheDir)).toList();
+				.map(f -> CachedX4Data.of(baseDir, f.getName().replace(".cat", ""), cacheDir))
+				.sorted(Comparator.comparing(d -> d.getCatFile().getAbsolutePath()))
+				.toList();
 	}
 
 	@Getter(lazy = true)
@@ -123,6 +125,6 @@ public class X4Cache {
 						.map(f -> CachedX4Data.of(extDir, f.getName().replace(".cat", ""), extCache)));
 			}
 		}
-		return ret.toList();
+		return ret.sorted(Comparator.comparing(d -> d.getCatFile().getAbsolutePath())).toList();
 	}
 }
