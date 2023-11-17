@@ -117,8 +117,10 @@ public class X4Cache {
 			}
 			File[] dataFiles = extDir.listFiles(f -> f.isFile() && f.getName().endsWith(".cat"));
 			if (dataFiles.length > 0) {
+				String extName = extDir.getName();
+				File extCache = new File(baseCacheDir, extName);
 				ret = Stream.concat(ret, Stream.of(dataFiles)
-						.map(f -> CachedX4Data.of(extDir, f.getName().replace(".cat", ""), baseCacheDir)));
+						.map(f -> CachedX4Data.of(extDir, f.getName().replace(".cat", ""), extCache)));
 			}
 		}
 		return ret.toList();

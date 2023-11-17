@@ -41,10 +41,9 @@ public class CachedX4Data {
 	 *                  This dir MUST be a dir or creatable.
 	 * @return
 	 */
-	public static CachedX4Data of(File mainDir, String name, File cacheRoot) {
+	public static CachedX4Data of(File mainDir, String name, File cache) {
 		File cat = new File(mainDir, name + ".cat");
 		File dat = new File(mainDir, name + ".dat");
-		File cache = new File(cacheRoot, name);
 		if (!cache.getName().equals(name)) {
 			cache = new File(cache, name);
 		}
@@ -82,6 +81,9 @@ public class CachedX4Data {
 			FileInputStream fis = new FileInputStream(datFile);
 			for (CatLine cl : entries()) {
 				File outFile = new File(cacheDir, cl.path());
+				if (outFile.exists() && outFile.lastModified() > cl.epoch()) {
+					continue;
+				}
 				outFile.getParentFile().mkdirs();
 				System.out.println("extracting " + datFile.getName() + "/" + cl.path() + " into " + outFile);
 				try (FileOutputStream fos = new FileOutputStream(outFile)) {
