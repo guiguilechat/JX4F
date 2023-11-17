@@ -10,6 +10,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.Accessors;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * X4 data : couple of cat and dat file. the cacheRoot allows us to access the
@@ -20,6 +21,7 @@ import lombok.experimental.Accessors;
  * the entries into the cache. This can also be performed manually with
  * {@link #extract()}
  */
+@Slf4j
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class CachedX4Data {
 
@@ -78,19 +80,19 @@ public class CachedX4Data {
 			return;
 		}
 		try {
-			FileInputStream fis = new FileInputStream(datFile);
+			FileInputStream dataInputStream = new FileInputStream(datFile);
 			for (CatLine cl : entries()) {
-				File outFile = new File(cacheDir, cl.path());
-				if (outFile.exists() && outFile.lastModified() > cl.epoch()) {
+				File dataCacheOut = new File(cacheDir, cl.path());
+				if (dataCacheOut.exists() && dataCacheOut.lastModified() > cl.epoch()) {
 					continue;
 				}
-				outFile.getParentFile().mkdirs();
-				System.out.println("extracting " + datFile.getName() + "/" + cl.path() + " into " + outFile);
-				try (FileOutputStream fos = new FileOutputStream(outFile)) {
-					fos.write(fis.readNBytes(cl.bytes()));
+				dataCacheOut.getParentFile().mkdirs();
+				log.debug("extracting " + datFile.getName() + "/" + cl.path() + " into " + dataCacheOut);
+				try (FileOutputStream fos = new FileOutputStream(dataCacheOut)) {
+					fos.write(dataInputStream.readNBytes(cl.bytes()));
 				}
 			}
-			fis.close();
+			dataInputStream.close();
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}

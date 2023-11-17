@@ -49,7 +49,6 @@ public class X4Cache {
 	public static String[] PROGRAMSUBDIRS = { "Steam/steamapps/common/X4 Foundations" };
 
 	protected File findX4Directory() {
-
 		if (System.getProperty(X4MAINDIR_ENV) != null) {
 			File file = new File(System.getProperty(X4MAINDIR_ENV));
 			return file.isDirectory() ? file : null;
@@ -126,5 +125,17 @@ public class X4Cache {
 			}
 		}
 		return ret.sorted(Comparator.comparing(d -> d.getCatFile().getAbsolutePath())).toList();
+	}
+
+	@Getter(lazy = true)
+	@Accessors(fluent = true)
+	private final List<String> extensions = listExtensions();
+
+	protected List<String> listExtensions() {
+		File extDir = new File(x4Dir(), "extensions");
+		if (!extDir.isFile()) {
+			return Collections.emptyList();
+		}
+		return Stream.of(extDir.listFiles(File::isDirectory)).map(File::getName).toList();
 	}
 }
