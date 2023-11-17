@@ -12,6 +12,11 @@ import fr.lelouet.tools.application.xdg.XDGApp;
 import lombok.Getter;
 import lombok.experimental.Accessors;
 
+/**
+ * cache of X4 resource<br />
+ * Allows to extract x4 dat, from main or extensions, into the cache directory.
+ * The cache is updated when the data is.
+ */
 public class X4Cache {
 
 	public static final X4Cache INSTANCE = new X4Cache();
@@ -23,8 +28,8 @@ public class X4Cache {
 	public static void main(String[] args) {
 		System.out.println("game data are in : " + INSTANCE.x4Dir());
 		System.out.println("cache is : " + INSTANCE.cacheDir());
-		INSTANCE.mainData().forEach(CachedX4Data::extract);
-		INSTANCE.extensionData().forEach(CachedX4Data::extract);
+		Stream.concat(INSTANCE.mainData().stream(), INSTANCE.extensionData().stream()).parallel()
+				.forEach(CachedX4Data::extract);
 	}
 
 	@Getter(lazy = true)
@@ -41,12 +46,19 @@ public class X4Cache {
 	private final File x4Dir = findX4Directory();
 
 	/**
-	 * list of dirs we may find the install under our home
+	 * list of dirs we may find the install under our home (linux)
 	 */
 	public static String[] HOMESUBDIRS = {
 			".steam/debian-installation/steamapps/common/X4 Foundations",
-			".steam/steam/steamapps/common/X4 Foundations/" };
-	public static String[] PROGRAMSUBDIRS = { "Steam/steamapps/common/X4 Foundations" };
+			".steam/steam/steamapps/common/X4 Foundations/"
+	};
+
+	/**
+	 * list of subdirs we may find the install under the program files (windows)
+	 */
+	public static String[] PROGRAMSUBDIRS = {
+			"Steam/steamapps/common/X4 Foundations"
+	};
 
 	protected File findX4Directory() {
 		if (System.getProperty(X4MAINDIR_ENV) != null) {

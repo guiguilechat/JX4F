@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Stream;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -102,6 +103,10 @@ public class CachedX4Data {
 	public File entryFile(CatLine entry) {
 		extract();
 		return new File(cacheDir, entry.path());
+	}
+
+	public Stream<File> files() {
+		return entries().stream().map(this::entryFile);
 	}
 
 }
