@@ -26,11 +26,6 @@
 			<!-- /submodules -->
 
 			<dependency>
-				<groupId>com.dorkbox</groupId>
-				<artifactId>CabParser</artifactId>
-				<version>3.4</version>
-			</dependency>
-			<dependency>
 				<groupId>fr.lelouet.tools.application</groupId>
 				<artifactId>XDGSettings</artifactId>
 				<version>1.7.8</version>

@@ -11,10 +11,6 @@
 	<artifactId>X4Model</artifactId>
 	<dependencies>
 		<dependency>
-			<groupId>com.dorkbox</groupId>
-			<artifactId>CabParser</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>fr.lelouet.tools.application</groupId>
 			<artifactId>XDGSettings</artifactId>
 		</dependency>
