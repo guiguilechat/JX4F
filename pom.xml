@@ -19,8 +19,13 @@
 		<dependencies>
 			<!-- sub modules -->
 			<dependency>
-				<groupId>fr.guiguilechat.jx4f</groupId>
-				<artifactId>X4Model</artifactId>
+				<groupId>fr.guiguilechat.jx4f.model</groupId>
+				<artifactId>X4Unpacker</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>fr.guiguilechat.jx4f.model</groupId>
+				<artifactId>X4Catalog</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<!-- /submodules -->

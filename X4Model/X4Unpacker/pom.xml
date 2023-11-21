@@ -1,0 +1,29 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>fr.guiguilechat.jx4f</groupId>
+		<artifactId>X4Model</artifactId>
+		<version>0.0.1</version>
+	</parent>
+	<groupId>fr.guiguilechat.jx4f.model</groupId>
+	<artifactId>X4Unpacker</artifactId>
+	<dependencies>
+		<dependency>
+			<groupId>fr.lelouet.tools.application</groupId>
+			<artifactId>XDGSettings</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+		</dependency>
+	</dependencies>
+	<description>unpacks the X4 data from a local game into a cache.
+
+The unpacker can be configured using a config file 
+typically $HOME/.config/fr.guiguilechat.jx4f.model.unpacker/config.yaml : 
+
+	x4Dir:&quot;directory&quot;
+	x4Cache:&quot;anotherDir&quot;</description>
+</project>

@@ -1,29 +1,35 @@
-package fr.guiguilechat.jx4f.x4model;
+package fr.guiguilechat.jx4f.model.unpacker;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Stream;
 
-import fr.guiguilechat.jx4f.x4model.data.CachedX4Data;
+import org.yaml.snakeyaml.Yaml;
+
+import fr.guiguilechat.jx4f.model.unpacker.data.CachedX4Data;
 import fr.lelouet.tools.application.xdg.XDGApp;
 import lombok.Getter;
 import lombok.experimental.Accessors;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * cache of X4 resource<br />
  * Allows to extract x4 dat, from main or extensions, into the cache directory.
  * The cache is updated when the data is.
  */
+@Slf4j
 public class X4Cache {
 
 	public static final X4Cache INSTANCE = new X4Cache();
 
-	public static final String APNAME_ENV = "jx4f.appname";
-	public static final String CACHEDIR_ENV = "jx4f.cachedir";
-	public static final String X4MAINDIR_ENV = "jx4f.maindir";
+	public static final String APNAME_ENV = "jx4f.unpacker.appname";
+	public static final String CACHEDIR_ENV = "jx4f.unpacker.cachedir";
+	public static final String X4MAINDIR_ENV = "jx4f.unpacker.maindir";
 
 	public static void main(String[] args) {
 		System.out.println("game data are in : " + INSTANCE.x4Dir());
@@ -34,12 +40,45 @@ public class X4Cache {
 
 	@Getter(lazy = true)
 	@Accessors(fluent = true)
-	private final XDGApp app = new XDGApp(
-			System.getenv().getOrDefault(APNAME_ENV, "lechatguigui.jx4f.model"));
+	private final XDGApp app = new XDGApp(System.getenv().getOrDefault(APNAME_ENV, X4Cache.class.getPackageName()));
 
 	@Getter(lazy = true)
 	@Accessors(fluent = true)
-	private final File cacheDir = app().cacheFile("x4data");
+	private final Config config = loadConfig();
+
+	/** load the config if exists, otherwise returns an empty config */
+	protected Config loadConfig() {
+		File yamlFile = app().configFile("config.yaml");
+		if (yamlFile.isFile()) {
+			try {
+				return new Yaml().loadAs(new FileReader(yamlFile), Config.class);
+			} catch (FileNotFoundException e) {
+				log.error("while loading yaml file " + yamlFile + " as " + Config.class, e);
+			}
+		}
+		return new Config();
+	}
+
+	@Getter(lazy = true)
+	@Accessors(fluent = true)
+	private final File cacheDir = selectCacheDir();
+
+	protected File selectCacheDir() {
+
+		// search for var env first
+		if (System.getProperty(CACHEDIR_ENV) != null) {
+			return new File(System.getProperty(CACHEDIR_ENV));
+		}
+
+		// then use config is specified
+		if (config().getX4Cache() != null) {
+			return new File(config().getX4Cache());
+		}
+
+		// else return default
+		return app().cacheFile("x4data");
+
+	}
 
 	@Getter(lazy = true)
 	@Accessors(fluent = true)
@@ -60,12 +99,26 @@ public class X4Cache {
 			"Steam/steamapps/common/X4 Foundations"
 	};
 
+	/**
+	 * search for the existing X4 directory
+	 *
+	 * @return the found directory, or null.
+	 */
 	protected File findX4Directory() {
+
+		// if specified as an env variable, then use it
 		if (System.getProperty(X4MAINDIR_ENV) != null) {
 			File file = new File(System.getProperty(X4MAINDIR_ENV));
 			return file.isDirectory() ? file : null;
 		}
 
+		// if present in the config, use it.
+		if (config().getX4Dir() != null) {
+			File file = new File(config().getX4Dir());
+			return file.isDirectory() ? file : null;
+		}
+
+		// else try to find
 		ArrayList<File> potentialDirs = new ArrayList<>();
 
 		String homePath = System.getProperty("user.home");
@@ -102,6 +155,7 @@ public class X4Cache {
 		return potentialDirs.get(0);
 	}
 
+	/** list of data resources that are from the main game */
 	@Getter(lazy = true)
 	@Accessors(fluent = true)
 	private final List<CachedX4Data> mainData = listMainData();
@@ -116,11 +170,12 @@ public class X4Cache {
 				.toList();
 	}
 
+	/** list of data resources that are from extensions */
 	@Getter(lazy = true)
 	@Accessors(fluent = true)
-	private final List<CachedX4Data> extensionData = listExtensionsData();
+	private final List<CachedX4Data> extensionData = listExtensionData();
 
-	protected List<CachedX4Data> listExtensionsData() {
+	protected List<CachedX4Data> listExtensionData() {
 		File baseDir = new File(x4Dir(), "extensions");
 		File baseCacheDir = new File(cacheDir(), "extensions");
 		Stream<CachedX4Data> ret = Stream.empty();
@@ -139,6 +194,7 @@ public class X4Cache {
 		return ret.sorted(Comparator.comparing(d -> d.getCatFile().getAbsolutePath())).toList();
 	}
 
+	/** the list of extensions names */
 	@Getter(lazy = true)
 	@Accessors(fluent = true)
 	private final List<String> extensions = listExtensions();

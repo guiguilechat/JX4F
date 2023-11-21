@@ -1,22 +1,15 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>fr.guiguilechat</groupId>
-		<artifactId>JX4F</artifactId>
-		<version>0.0.1</version>
-	</parent>
-	<groupId>fr.guiguilechat.jx4f</groupId>
-	<artifactId>X4Model</artifactId>
-	<dependencies>
-		<dependency>
-			<groupId>fr.lelouet.tools.application</groupId>
-			<artifactId>XDGSettings</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.projectlombok</groupId>
-			<artifactId>lombok</artifactId>
-		</dependency>
-	</dependencies>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>fr.guiguilechat</groupId>
+    <artifactId>JX4F</artifactId>
+    <version>0.0.1</version>
+  </parent>
+  <groupId>fr.guiguilechat.jx4f</groupId>
+  <artifactId>X4Model</artifactId>
+  <packaging>pom</packaging>
+  <modules>	  
+		<module>X4Unpacker</module>
+		<module>X4Catalog</module>
+  </modules>
 </project>

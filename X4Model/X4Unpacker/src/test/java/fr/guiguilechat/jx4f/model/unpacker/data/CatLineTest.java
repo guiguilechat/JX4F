@@ -1,4 +1,4 @@
-package fr.guiguilechat.jx4f.x4model.data;
+package fr.guiguilechat.jx4f.model.unpacker.data;
 
 import org.testng.Assert;
 import org.testng.annotations.Test;

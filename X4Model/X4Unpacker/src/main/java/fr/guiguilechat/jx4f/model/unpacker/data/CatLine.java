@@ -1,4 +1,4 @@
-package fr.guiguilechat.jx4f.x4model.data;
+package fr.guiguilechat.jx4f.model.unpacker.data;
 
 import java.io.File;
 import java.io.IOException;

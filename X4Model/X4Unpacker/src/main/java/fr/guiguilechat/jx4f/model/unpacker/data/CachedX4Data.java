@@ -1,4 +1,4 @@
-package fr.guiguilechat.jx4f.x4model.data;
+package fr.guiguilechat.jx4f.model.unpacker.data;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -16,11 +16,16 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * X4 data : couple of cat and dat file. the cacheRoot allows us to access the
  * content of the .dat <br />
+ * <p>
  * The entries can be access by listing the entries with {@link #entries}, then
- * loaded with {@link #entryFile(CatLine)}.<br />
+ * loaded with {@link #entryFile(CatLine)}.
+ * </p>
+ * <p>
+ * /
  * The first access to {@link #entryFile(CatLine)} triggers the extract of all
  * the entries into the cache. This can also be performed manually with
  * {@link #extract()}
+ * </p>
  */
 @Slf4j
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
@@ -85,6 +90,12 @@ public class CachedX4Data {
 			for (CatLine cl : entries()) {
 				File dataCacheOut = new File(cacheDir, cl.path());
 				if (dataCacheOut.exists() && dataCacheOut.lastModified() > cl.epoch()) {
+					continue;
+				}
+				if (cl.bytes() == 0) {
+					if (dataCacheOut.isFile()) {
+						dataCacheOut.delete();
+					}
 					continue;
 				}
 				dataCacheOut.getParentFile().mkdirs();
